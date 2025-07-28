@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>প্রশ্ন ব্যাংক</title>
+    <style>
+        body { font-family: sans-serif; }
+        .hidden { display: none; }
+        select { margin: 10px; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h2>প্রশ্ন ব্যাংক</h2>
+
+    <!-- Step 1: Select Class -->
+    <label>শ্রেণী:</label>
+    <select id="classSelect">
+        <option value="">-- বেছে নিন --</option>
+        <option value="class1">১ম শ্রেণী</option>
+        <option value="class2">২য় শ্রেণী</option>
+    </select>
+
+    <!-- Step 2: Select Subject -->
+    <div id="subjectDiv" class="hidden">
+        <label>বিষয়:</label>
+        <select id="subjectSelect">
+            <option value="">-- বেছে নিন --</option>
+        </select>
+    </div>
+
+    <!-- Step 3: Select Exam -->
+    <div id="examDiv" class="hidden">
+        <label>পরীক্ষা:</label>
+        <select id="examSelect">
+            <option value="">-- বেছে নিন --</option>
+        </select>
+    </div>
+
+    <!-- Step 4: Select Year -->
+    <div id="yearDiv" class="hidden">
+        <label>সাল:</label>
+        <select id="yearSelect">
+            <option value="">-- বেছে নিন --</option>
+        </select>
+    </div>
+
+    <!-- Final Link -->
+    <div id="linkDiv" class="hidden">
+        <p><a id="fileLink" href="#" target="_blank">প্রশ্ন ফাইল দেখুন</a></p>
+    </div>
+
+    <script>
+        const data = {
+            class1: {
+                বাংলা: {
+                    '১ম সাময়িক': {
+                        '২০২১': 'https://drive.google.com/file/d/abc123/view',
+                        '২০২২': 'https://drive.google.com/file/d/def456/view'
+                    },
+                    বার্ষিক: {
+                        '২০২৩': 'https://drive.google.com/file/d/xyz789/view'
+                    }
+                },
+                গণিত: {
+                    বার্ষিক: {
+                        '২০২৩': 'https://drive.google.com/file/d/xyz111/view'
+                    }
+                }
+            }
+        };
+
+        const classSelect = document.getElementById('classSelect');
+        const subjectSelect = document.getElementById('subjectSelect');
+        const examSelect = document.getElementById('examSelect');
+        const yearSelect = document.getElementById('yearSelect');
+        const subjectDiv = document.getElementById('subjectDiv');
+        const examDiv = document.getElementById('examDiv');
+        const yearDiv = document.getElementById('yearDiv');
+        const linkDiv = document.getElementById('linkDiv');
+        const fileLink = document.getElementById('fileLink');
+
+        classSelect.addEventListener('change', () => {
+            subjectSelect.innerHTML = '<option value="">-- বেছে নিন --</option>';
+            examSelect.innerHTML = yearSelect.innerHTML = '';
+            linkDiv.classList.add('hidden');
+
+            const selectedClass = classSelect.value;
+            if (data[selectedClass]) {
+                subjectDiv.classList.remove('hidden');
+                Object.keys(data[selectedClass]).forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject;
+                    option.textContent = subject;
+                    subjectSelect.appendChild(option);
+                });
+            }
+        });
+
+        subjectSelect.addEventListener('change', () => {
+            examSelect.innerHTML = '<option value="">-- বেছে নিন --</option>';
+            yearSelect.innerHTML = '';
+            linkDiv.classList.add('hidden');
+
+            const exams = data[classSelect.value][subjectSelect.value];
+            if (exams) {
+                examDiv.classList.remove('hidden');
+                Object.keys(exams).forEach(exam => {
+                    const option = document.createElement('option');
+                    option.value = exam;
+                    option.textContent = exam;
+                    examSelect.appendChild(option);
+                });
+            }
+        });
+
+        examSelect.addEventListener('change', () => {
+            yearSelect.innerHTML = '<option value="">-- বেছে নিন --</option>';
+            linkDiv.classList.add('hidden');
+
+            const years = data[classSelect.value][subjectSelect.value][examSelect.value];
+            if (years) {
+                yearDiv.classList.remove('hidden');
+                Object.keys(years).forEach(year => {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    yearSelect.appendChild(option);
+                });
+            }
+        });
+
+        yearSelect.addEventListener('change', () => {
+            const link = data[classSelect.value][subjectSelect.value][examSelect.value][yearSelect.value];
+            if (link) {
+                linkDiv.classList.remove('hidden');
+                fileLink.href = link;
+            }
+        });
+    </script>
+</body>
+</html>
